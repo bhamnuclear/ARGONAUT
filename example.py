@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 from RmTools import Argonaut
 
 ex_list = [0.0,2.345,2.75]
-scales = [1,10,5]
+scales = [5e-2,10,5]
 
-xlist = np.append(np.arange(-0.5,-0.01,0.01),np.arange(-0.01,0.01,0.00005))
-xlist = np.append(xlist,np.arange(0.01,3.5,0.01))
+xlist = np.append(np.arange(-0.5,-0.01,0.001),np.arange(-0.01,0.01,0.00005))
+xlist = np.append(xlist,np.arange(0.01,3.5,0.001))
 
 
-stdev = np.zeros_like(xlist)
+stdev = np.zeros_like(xlist) + 0.01
 
 
 m1_dch1 = 8 
@@ -43,15 +43,15 @@ zs = [[z1_dch1,z2_dch1],[z1_dch2,z2_dch2]]
 lnshp = Argonaut(xlist,ex_list,qvals,gamma_uni,branches,ls,masses,zs,stdev,scales)
 
 state1_contrb = Argonaut(xlist,[ex_list[0]],qvals,[gamma_uni[0]],
-                         [[branches[0][0]],[branches[1][0]]],[[ls[0][0]][ls[1][0]]],
+                         [[branches[0][0]],[branches[1][0]]],[[ls[0][0]],[ls[1][0]]],
                          masses,zs,stdev,[scales[0]])
 
 state2_contrb = Argonaut(xlist,[ex_list[1]],qvals,[gamma_uni[1]],
-                         [[branches[0][1]],[branches[1][1]]],[[ls[0][1]][ls[1][1]]],
+                         [[branches[0][1]],[branches[1][1]]],[[ls[0][1]],[ls[1][1]]],
                          masses,zs,stdev,[scales[1]])
 
 state3_contrb = Argonaut(xlist,[ex_list[2]],qvals,[gamma_uni[2]],
-                         [[branches[0][2]],[branches[1][2]]],[[ls[0][2]][ls[1][2]]],
+                         [[branches[0][2]],[branches[1][2]]],[[ls[0][2]],[ls[1][2]]],
                          masses,zs,stdev,[scales[2]])
 
 
@@ -64,5 +64,5 @@ ax.plot(xlist,state1_contrb,ls='-.',label='State 1')
 ax.plot(xlist,state2_contrb,ls='-.',label='State 2')
 ax.plot(xlist,state3_contrb,ls='-.',label='State 3')
 
-ax.legend()
+ax.legend(frameon=False,draggable=True)
 plt.show()
