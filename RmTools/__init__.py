@@ -3,7 +3,7 @@ ARGONAUT.
 
 R-matrix sequential decay strength profile tool
 """
-from RmTools import Argonaut
+from RmTools.RmTools import Argonaut
 
 __version__ = "1.0.0"
 __author__ = "Alex Brooks"
