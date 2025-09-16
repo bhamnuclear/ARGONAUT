@@ -1,0 +1,5 @@
+numpy
+scipy
+pygsl
+concurrent.futures
+functools
