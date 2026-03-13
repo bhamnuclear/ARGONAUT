@@ -202,7 +202,7 @@ def Argonaut(x_points,exc_arr,qvals_dch,gammastates,BR_dch,lstates_dch,m,z_dch,
 
 ## NEED TO UNDERSTAND WHAT THIS IS REALLY DOING... 
     
-    process_partial = partial(process_excitation, widtharr=widtharr, shiftarr=shiftarr, x_points=x_points, exc_arr=exc_arr, sigma_arr=sigma_arr, scale_arr=scale_arr) 
+    process_partial = partial(process_excitation, widtharr=widtharr, shiftarr=shiftarr, x_points=x_points, exc_arr=exc_arr, sigma_arr=sigma_arr, scale_arr=scale_arr,dch_sel=dch_sel)
     # what this does is create a new function technically which is process_excitation but with only n as the free variable.. 
     # this is so that it can then be fed into the multithreading correctly... 
 
@@ -211,10 +211,8 @@ def Argonaut(x_points,exc_arr,qvals_dch,gammastates,BR_dch,lstates_dch,m,z_dch,
         # map does what it says and maps the variables to executor in the correct way
         # list is there to store the ProcessPoolExecutor outputs 
 
-    if dch_sel == None:
-        combinedvoigtarr = np.sum(results, axis=0)  # flattens array of combined voigts
-    else:
-        combinedvoigtarr = results[dch_sel]
+    combinedvoigtarr = np.sum(results, axis=0)  # flattens array of combined voigts
+
 
     return combinedvoigtarr 
 
@@ -268,7 +266,7 @@ def convolution(spectrum, sigma, E, batch_size=1000):
 
 # for MT to work this has to be outside so that it is pickleable (not entirely sure what this means... )
 
-def process_excitation(n, widtharr, shiftarr, x_points, exc_arr, sigma_arr, scale_arr):
+def process_excitation(n, widtharr, shiftarr, x_points, exc_arr, sigma_arr, scale_arr, dch_sel):
         widthtemp = np.zeros(len(widtharr[0][n]))
         shifttemp = np.zeros(len(shiftarr[0][n]))
 
@@ -286,9 +284,12 @@ def process_excitation(n, widtharr, shiftarr, x_points, exc_arr, sigma_arr, scal
 
         lineshape = np.zeros(len(widtharr[0][n]))   # makes an empty array to store final lineshape
         
-        for dch in range(len(widtharr)):    # loops over each decay channel
-            # need to divide widthtemp by widtharr[dch][n] but for any zero values in widtharr[dch][n] need to just set the answer to zero
-            lineshape += widtharr[dch][n] / denom   # calculates the BW for R-matrix
+        if dch_sel == None:
+            for dch in range(len(widtharr)):    # loops over each decay channel
+                # need to divide widthtemp by widtharr[dch][n] but for any zero values in widtharr[dch][n] need to just set the answer to zero
+                lineshape += widtharr[dch][n] / denom   # calculates the BW for R-matrix
+        else:
+            lineshape += widtharr[dch_sel][n] / denom
 
         '''lineshape = np.zeros(len(widtharr[0][n]))
 
