@@ -12,7 +12,7 @@ alpha = const.fine_structure
 #############################################################################################
 
 def Argonaut(x_points,exc_arr,qvals_dch,gammastates,BR_dch,lstates_dch,m,z_dch,
-             sigma_arr,scale_arr,r0_user=1.4): 
+             sigma_arr,scale_arr,dch_sel=None,r0_user=1.4):
     """
     R-matrix sequential decay strength profile tool. See "Nuclear Reactions for Astrophysics" by Thompson and Nunes for theory overview. 
 
@@ -48,6 +48,9 @@ def Argonaut(x_points,exc_arr,qvals_dch,gammastates,BR_dch,lstates_dch,m,z_dch,
 
     scale_arr       : array_like
                         Scale parameters for each state
+
+    dch_sel         : int
+                        Selection varaible for only returning voigt lineshape in given decay channel
 
     r0_user         : float
                         R-matrix channel radius (in fm)
@@ -208,7 +211,10 @@ def Argonaut(x_points,exc_arr,qvals_dch,gammastates,BR_dch,lstates_dch,m,z_dch,
         # map does what it says and maps the variables to executor in the correct way
         # list is there to store the ProcessPoolExecutor outputs 
 
-    combinedvoigtarr = np.sum(results, axis=0)  # flattens array of combined voigts 
+    if dch_sel == None:
+        combinedvoigtarr = np.sum(results, axis=0)  # flattens array of combined voigts
+    else:
+        combinedvoigtarr = results[dch_sel]
 
     return combinedvoigtarr 
 
